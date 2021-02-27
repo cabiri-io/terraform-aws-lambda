@@ -34,7 +34,7 @@ locals {
   script = <<EOF
 #!/bin/bash
 
-if [[ '${var.target_version}' == '${var.current_version != "" ? var.current_version : local.current_version}' ]]; then
+if [ '${var.target_version}' == '${var.current_version != "" ? var.current_version : local.current_version}' ]; then
   echo "Skipping deployment because target version (${var.target_version}) is already the current version"
   exit 0
 fi
@@ -54,7 +54,7 @@ STATUS=$(${var.aws_cli_command} deploy get-deployment \
     --output text \
     --query '[deploymentInfo.status]')
 
-while [[ $STATUS == "Created" || $STATUS == "InProgress" || $STATUS == "Pending" || $STATUS == "Queued" || $STATUS == "Ready" ]]; do
+while [ $STATUS == "Created" || $STATUS == "InProgress" || $STATUS == "Pending" || $STATUS == "Queued" || $STATUS == "Ready" ]; do
     echo "Status: $STATUS..."
     STATUS=$(${var.aws_cli_command} deploy get-deployment \
         --deployment-id $ID \
@@ -63,7 +63,7 @@ while [[ $STATUS == "Created" || $STATUS == "InProgress" || $STATUS == "Pending"
     sleep 5
 done
 
-if [[ $STATUS == "Succeeded" ]]; then
+if [ $STATUS == "Succeeded" ]; then
     echo "Deployment succeeded."
 else
     echo "Deployment failed!"
