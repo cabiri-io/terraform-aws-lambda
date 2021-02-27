@@ -54,7 +54,7 @@ STATUS=$(${var.aws_cli_command} deploy get-deployment \
     --output text \
     --query '[deploymentInfo.status]')
 
-while [ $STATUS == "Created" ] || [ $STATUS == "InProgress" ] || [ $STATUS == "Pending" ] || [ $STATUS == "Queued" || [ $STATUS == "Ready" ]; do
+while [ $STATUS == "Created" ] || [ $STATUS == "InProgress" ] || [ $STATUS == "Pending" ] || [ $STATUS == "Queued" ] || [ $STATUS == "Ready" ]; do
     echo "Status: $STATUS..."
     STATUS=$(${var.aws_cli_command} deploy get-deployment \
         --deployment-id $ID \
