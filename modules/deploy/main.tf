@@ -113,6 +113,7 @@ resource "null_resource" "deploy" {
   }
 
   provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
     command = local.script
   }
 }
