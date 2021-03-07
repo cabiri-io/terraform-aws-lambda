@@ -9,6 +9,7 @@ locals {
   s3_key            = var.s3_existing_package != null ? lookup(var.s3_existing_package, "key", null) : (var.store_on_s3 ? element(concat(data.external.archive_prepare.*.result.filename, [null]), 0) : null)
   s3_object_version = var.s3_existing_package != null ? lookup(var.s3_existing_package, "version_id", null) : (var.store_on_s3 ? element(concat(aws_s3_bucket_object.lambda_package.*.version_id, [null]), 0) : null)
 
+  source_code_hash  = var.source_code_hash != null ? var.source_code_hash :  (local.filename == null ? false : fileexists(local.filename)) && !local.was_missing ? filebase64sha256(local.filename) : null
 }
 
 resource "aws_lambda_function" "this" {
@@ -29,7 +30,7 @@ resource "aws_lambda_function" "this" {
   package_type                   = var.package_type
 
   filename         = local.filename
-  source_code_hash = (local.filename == null ? false : fileexists(local.filename)) && !local.was_missing ? filebase64sha256(local.filename) : null
+  source_code_hash = local.source_code_hash
 
   s3_bucket         = local.s3_bucket
   s3_key            = local.s3_key

@@ -181,6 +181,12 @@ variable "image_config_working_directory" {
   default     = null
 }
 
+variable "source_code_hash" {
+  description = "User defined source hash"
+  type        = string
+  default     = null
+}
+
 ########
 # Layer
 ########
