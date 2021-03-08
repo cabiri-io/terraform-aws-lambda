@@ -33,6 +33,21 @@ output "appspec_sha256" {
   value       = local.appspec_sha256
 }
 
+output "appspec_rollback" {
+  description = "Appspec data as HCL"
+  value       = local.appspec_rollback
+}
+
+output "appspec_rollback_content" {
+  description = "Appspec data as valid JSON"
+  value       = local.appspec_rollback_content
+}
+
+output "appspec_rollback_sha256" {
+  description = "SHA256 of Appspec JSON"
+  value       = local.appspec_rollback_sha256
+}
+
 output "script" {
   description = "Deployment script"
   value       = local.script

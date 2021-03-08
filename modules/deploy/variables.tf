@@ -96,6 +96,12 @@ variable "deployment_config_name" {
   default     = "CodeDeployDefault.LambdaAllAtOnce"
 }
 
+variable "rollback_deployment_config_name" {
+  description = "Name of deployment config to use"
+  type        = string
+  default     = "CodeDeployDefault.LambdaAllAtOnce"
+}
+
 variable "auto_rollback_enabled" {
   description = "Indicates whether a defined automatic rollback configuration is currently enabled for this Deployment Group."
   type        = bool
