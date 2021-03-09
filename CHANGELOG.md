@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+<a name="v2.0.0"></a>
+## [v2.0.0] - 2021-03-09
+
+- chore: Cabiri's first internal release
+
 
 <a name="v1.39.0"></a>
 ## [v1.39.0] - 2021-02-22
