@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+<a name="v2.1.0"></a>
+## [v2.1.0] - 2021-03-09
+
+- feat: extend the deploy submodule ([#1](https://github.com/cabiri-io/terraform-aws-lambda/pull/1))
+
+
 <a name="v2.0.0"></a>
 ## [v2.0.0] - 2021-03-09
 
