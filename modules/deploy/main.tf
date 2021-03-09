@@ -269,9 +269,9 @@ resource "aws_iam_role_policy_attachment" "triggers" {
 }
 
 resource "aws_s3_bucket_object" "backup_codedeploy_script" {
-  count = var.create && var.create_deployment && var.save_deploy_script && (length(var.s3_bucket_name_for_backup) > 1) ? 1 : 0
+  count = var.create && var.create_deployment && var.save_deploy_script && (length(var.s3_bucket_name_for_backup) > 1) && (length(var.s3_object_name_prefix) > 1) ? 1 : 0
 
   bucket = var.s3_bucket_name_for_backup
-  key    = "${var.function_name}-lambda-codedeploy.sh"
+  key    = "${var.s3_object_name_prefix}/${var.function_name}-lambda-codedeploy.sh"
   source = element(concat(local_file.deploy_script.*.filename, [""]), 0)
 }
