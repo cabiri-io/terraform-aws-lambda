@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+<a name="v2.2.1"></a>
+## [v2.2.1] - 2021-03-10
+
+- feat: create a separate deployment group for rollback([#3](https://github.com/cabiri-io/terraform-aws-lambda/pull/3))
+
+
 <a name="v2.2.0"></a>
 ## [v2.2.0] - 2021-03-10
 
