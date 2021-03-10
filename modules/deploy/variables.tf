@@ -172,6 +172,18 @@ variable "wait_deployment_completion" {
   default     = false
 }
 
+variable "s3_bucket_name_for_backup" {
+  description = "The S3 bucket where to upload the deploy script"
+  type        = string
+  default     = ""
+}
+
+variable "s3_object_name_prefix" {
+  description = "The S3 object name prefix"
+  type        = string
+  default     = ""
+}
+
 ######################
 # CodeDeploy IAM role
 ######################

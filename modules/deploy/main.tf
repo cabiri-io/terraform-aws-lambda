@@ -268,18 +268,10 @@ resource "aws_iam_role_policy_attachment" "triggers" {
   policy_arn = aws_iam_policy.triggers[0].arn
 }
 
-# https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html
-# https://www.terraform.io/docs/providers/aws/r/codedeploy_deployment_config.html
-#resource "aws_codedeploy_deployment_config" "this" {
-#  deployment_config_name = "test-deployment-config"
-#  compute_platform       = "Lambda"
-#
-#  traffic_routing_config {
-#    type = "TimeBasedLinear"
-#
-#    time_based_linear {
-#      interval   = 10
-#      percentage = 10
-#    }
-#  }
-#}
+resource "aws_s3_bucket_object" "backup_codedeploy_script" {
+  count = var.create && var.create_deployment && var.save_deploy_script && (length(var.s3_bucket_name_for_backup) > 1) && (length(var.s3_object_name_prefix) > 1) ? 1 : 0
+
+  bucket = var.s3_bucket_name_for_backup
+  key    = "${var.s3_object_name_prefix}/${var.function_name}-lambda-codedeploy.sh"
+  source = element(concat(local_file.deploy_script.*.filename, [""]), 0)
+}
