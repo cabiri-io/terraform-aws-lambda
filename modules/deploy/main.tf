@@ -82,7 +82,7 @@ else
   echo "Running Deployment Rollback"
   ID=$(${var.aws_cli_command} deploy create-deployment \
     --application-name ${local.app_name} \
-    --deployment-group-name ${local.deployment_group_name} \
+    --deployment-group-name ${local.deployment_group_name}-rollback \
     --deployment-config-name ${var.rollback_deployment_config_name} \
     --description "${var.description}" \
     --revision '{"revisionType": "AppSpecContent", "appSpecContent": {"content": "${local.appspec_rollback_content}", "sha256": "${local.appspec_rollback_sha256}"}}' \
@@ -203,6 +203,20 @@ resource "aws_codedeploy_deployment_group" "this" {
       trigger_name       = trigger_configuration.value.name
       trigger_target_arn = trigger_configuration.value.target_arn
     }
+  }
+}
+
+resource "aws_codedeploy_deployment_group" "rollback" {
+  count = var.create && var.create_deployment_group && ! var.use_existing_deployment_group ? 1 : 0
+
+  app_name               = local.app_name
+  deployment_group_name  = "${var.deployment_group_name}-rollback"
+  service_role_arn       = element(concat(aws_iam_role.codedeploy.*.arn, data.aws_iam_role.codedeploy.*.arn, [""]), 0)
+  deployment_config_name = var.rollback_deployment_config_name
+
+  deployment_style {
+    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_type   = "BLUE_GREEN"
   }
 }
 
