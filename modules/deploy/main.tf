@@ -60,12 +60,12 @@ locals {
 #!/bin/bash
 
 if [ '${var.target_version}' == '${var.current_version != "" ? var.current_version : local.current_version}' ]; then
-  echo "Skipping deployment because target & current versions are identical (Version: ${var.target_version})"
+  echo "[${local.app_name}] Skipping deployment because target & current versions are identical (Version: ${var.target_version})"
   exit 0
 fi
 
 if [ -z "$ROLLBACK" ] || [ -z "$WAIT_DEPLOYMENT_COMPLETION" ]; then
-  echo "Please set ROLLBACK & WAIT_DEPLOYMENT_COMPLETION Environment Variables"
+  echo "[${local.app_name}] Please set ROLLBACK & WAIT_DEPLOYMENT_COMPLETION Environment Variables"
   exit 1
 fi
 
@@ -79,7 +79,7 @@ if [ $ROLLBACK = false ]; then
     --output text \
     --query '[deploymentId]')
 else
-  echo "Running Deployment Rollback"
+  echo "[${local.app_name}] Running Deployment Rollback"
   ID=$(${var.aws_cli_command} deploy create-deployment \
     --application-name ${local.app_name} \
     --deployment-group-name ${local.deployment_group_name}-rollback \
@@ -97,24 +97,26 @@ if [ $WAIT_DEPLOYMENT_COMPLETION = true ]; then
     --query '[deploymentInfo.status]')
 
   while [ $STATUS == "Created" ] || [ $STATUS == "InProgress" ] || [ $STATUS == "Pending" ] || [ $STATUS == "Queued" ] || [ $STATUS == "Ready" ]; do
-    echo "Status: $STATUS..."
+    sleep 5
     STATUS=$(${var.aws_cli_command} deploy get-deployment \
       --deployment-id $ID \
       --output text \
       --query '[deploymentInfo.status]')
-    sleep 5
+    echo "[${local.app_name}] Status: $STATUS..."
   done
 
   if [ $STATUS == "Succeeded" ]; then
-    echo "Deployment succeeded."
+    echo "[${local.app_name}] Deployment succeeded."
   else
-    echo "Deployment failed!"
+    echo "[${local.app_name}] Deployment failed!"
   fi
-  ${var.aws_cli_command} deploy get-deployment --deployment-id $ID
 else
-  echo "Deployment started, but wait deployment completion is disabled!"
-  ${var.aws_cli_command} deploy get-deployment --deployment-id $ID
+  echo "[${local.app_name}] Deployment started, but wait deployment completion is disabled!"
 fi
+
+CD_INFO=$(${var.aws_cli_command} deploy get-deployment --deployment-id $ID)
+echo "[${local.app_name}]" 
+echo "$CD_INFO"
 
 EOF
 }
