@@ -59,6 +59,8 @@ locals {
   script = <<EOF
 #!/bin/bash
 
+EXIT_CODE=""
+
 if [ '${var.target_version}' == '${var.current_version != "" ? var.current_version : local.current_version}' ]; then
   echo "[${local.app_name}] Skipping deployment because target & current versions are identical (Version: ${var.target_version})"
   exit 0
@@ -107,8 +109,10 @@ if [ $WAIT_DEPLOYMENT_COMPLETION = true ]; then
 
   if [ $STATUS == "Succeeded" ]; then
     echo "[${local.app_name}] Deployment succeeded."
+    EXIT_CODE=0
   else
     echo "[${local.app_name}] Deployment failed!"
+    EXIT_CODE=1
   fi
 else
   echo "[${local.app_name}] Deployment started, but wait deployment completion is disabled!"
@@ -117,6 +121,13 @@ fi
 CD_INFO=$(${var.aws_cli_command} deploy get-deployment --deployment-id $ID)
 echo "[${local.app_name}]" 
 echo "$CD_INFO"
+
+if [ -z "$EXIT_CODE" ]
+then
+  exit 0
+else
+  exit $EXIT_CODE
+fi
 
 EOF
 }
