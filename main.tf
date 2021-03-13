@@ -2,18 +2,18 @@ locals {
   # Use a generated filename to determine when the source code has changed.
   # filename - to get package from local
   filename    = var.local_existing_package != null ? var.local_existing_package : (var.store_on_s3 ? null : element(concat(data.external.archive_prepare.*.result.filename, [null]), 0))
-  was_missing = var.local_existing_package != null ? !fileexists(var.local_existing_package) : element(concat(data.external.archive_prepare.*.result.was_missing, [false]), 0)
+  was_missing = var.local_existing_package != null ? ! fileexists(var.local_existing_package) : element(concat(data.external.archive_prepare.*.result.was_missing, [false]), 0)
 
   # s3_* - to get package from S3
   s3_bucket         = var.s3_existing_package != null ? lookup(var.s3_existing_package, "bucket", null) : (var.store_on_s3 ? var.s3_bucket : null)
   s3_key            = var.s3_existing_package != null ? lookup(var.s3_existing_package, "key", null) : (var.store_on_s3 ? element(concat(data.external.archive_prepare.*.result.filename, [null]), 0) : null)
   s3_object_version = var.s3_existing_package != null ? lookup(var.s3_existing_package, "version_id", null) : (var.store_on_s3 ? element(concat(aws_s3_bucket_object.lambda_package.*.version_id, [null]), 0) : null)
 
-  source_code_hash  = var.source_code_hash != null ? var.source_code_hash :  (local.filename == null ? false : fileexists(local.filename)) && !local.was_missing ? filebase64sha256(local.filename) : null
+  source_code_hash = var.source_code_hash != null ? var.source_code_hash : (local.filename == null ? false : fileexists(local.filename)) && ! local.was_missing ? filebase64sha256(local.filename) : null
 }
 
 resource "aws_lambda_function" "this" {
-  count = var.create && var.create_function && !var.create_layer ? 1 : 0
+  count = var.create && var.create_function && ! var.create_layer ? 1 : 0
 
   function_name                  = var.function_name
   description                    = var.description
@@ -97,7 +97,7 @@ resource "aws_lambda_layer_version" "this" {
   compatible_runtimes = length(var.compatible_runtimes) > 0 ? var.compatible_runtimes : [var.runtime]
 
   filename         = local.filename
-  source_code_hash = (local.filename == null ? false : fileexists(local.filename)) && !local.was_missing ? filebase64sha256(local.filename) : null
+  source_code_hash = (local.filename == null ? false : fileexists(local.filename)) && ! local.was_missing ? filebase64sha256(local.filename) : null
 
   s3_bucket         = local.s3_bucket
   s3_key            = local.s3_key
@@ -121,13 +121,13 @@ resource "aws_s3_bucket_object" "lambda_package" {
 }
 
 data "aws_cloudwatch_log_group" "lambda" {
-  count = var.create && var.create_function && !var.create_layer && var.use_existing_cloudwatch_log_group ? 1 : 0
+  count = var.create && var.create_function && ! var.create_layer && var.use_existing_cloudwatch_log_group ? 1 : 0
 
   name = "/aws/lambda/${var.lambda_at_edge ? "us-east-1." : ""}${var.function_name}"
 }
 
 resource "aws_cloudwatch_log_group" "lambda" {
-  count = var.create && var.create_function && !var.create_layer && !var.use_existing_cloudwatch_log_group ? 1 : 0
+  count = var.create && var.create_function && ! var.create_layer && ! var.use_existing_cloudwatch_log_group ? 1 : 0
 
   name              = "/aws/lambda/${var.lambda_at_edge ? "us-east-1." : ""}${var.function_name}"
   retention_in_days = var.cloudwatch_logs_retention_in_days
@@ -137,7 +137,7 @@ resource "aws_cloudwatch_log_group" "lambda" {
 }
 
 resource "aws_lambda_provisioned_concurrency_config" "current_version" {
-  count = var.create && var.create_function && !var.create_layer && var.provisioned_concurrent_executions > -1 ? 1 : 0
+  count = var.create && var.create_function && ! var.create_layer && var.provisioned_concurrent_executions > -1 ? 1 : 0
 
   function_name = aws_lambda_function.this[0].function_name
   qualifier     = aws_lambda_function.this[0].version
@@ -150,7 +150,7 @@ locals {
 }
 
 resource "aws_lambda_function_event_invoke_config" "this" {
-  for_each = var.create && var.create_function && !var.create_layer && var.create_async_event_config ? local.qualifiers : {}
+  for_each = var.create && var.create_function && ! var.create_layer && var.create_async_event_config ? local.qualifiers : {}
 
   function_name = aws_lambda_function.this[0].function_name
   qualifier     = each.key == "current_version" ? aws_lambda_function.this[0].version : null
@@ -179,7 +179,7 @@ resource "aws_lambda_function_event_invoke_config" "this" {
 }
 
 resource "aws_lambda_permission" "current_version_triggers" {
-  for_each = var.create && var.create_function && !var.create_layer && var.create_current_version_allowed_triggers ? var.allowed_triggers : {}
+  for_each = var.create && var.create_function && ! var.create_layer && var.create_current_version_allowed_triggers ? var.allowed_triggers : {}
 
   function_name = aws_lambda_function.this[0].function_name
   qualifier     = aws_lambda_function.this[0].version
@@ -194,7 +194,7 @@ resource "aws_lambda_permission" "current_version_triggers" {
 
 # Error: Error adding new Lambda Permission for lambda: InvalidParameterValueException: We currently do not support adding policies for $LATEST.
 resource "aws_lambda_permission" "unqualified_alias_triggers" {
-  for_each = var.create && var.create_function && !var.create_layer && var.create_unqualified_alias_allowed_triggers ? var.allowed_triggers : {}
+  for_each = var.create && var.create_function && ! var.create_layer && var.create_unqualified_alias_allowed_triggers ? var.allowed_triggers : {}
 
   function_name = aws_lambda_function.this[0].function_name
 
@@ -207,7 +207,7 @@ resource "aws_lambda_permission" "unqualified_alias_triggers" {
 }
 
 resource "aws_lambda_event_source_mapping" "this" {
-  for_each = var.create && var.create_function && !var.create_layer && var.create_unqualified_alias_allowed_triggers ? var.event_source_mapping : tomap({})
+  for_each = var.create && var.create_function && ! var.create_layer && var.create_unqualified_alias_allowed_triggers ? var.event_source_mapping : tomap({})
 
   function_name = aws_lambda_function.this[0].arn
 
