@@ -231,7 +231,7 @@ data "aws_iam_role" "codedeploy" {
 resource "aws_iam_role" "codedeploy" {
   count = var.create && var.create_codedeploy_role ? 1 : 0
 
-  name               = coalesce(var.codedeploy_role_name, "${local.app_name}-codedeploy")
+  name               = coalesce(var.codedeploy_role_name, "${local.app_name}-cd")
   assume_role_policy = data.aws_iam_policy_document.assume_role[0].json
 }
 
