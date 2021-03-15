@@ -6,6 +6,20 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+<a name="v2.2.3"></a>
+## [v2.2.3] - 2021-03-13
+
+-  fix: run codedeploy after provisioning all the required resources ([#7](https://github.com/cabiri-io/terraform-aws-lambda/pull/7))
+-  chore: Return the right exit code if CD fails ([#5](https://github.com/cabiri-io/terraform-aws-lambda/pull/5))
+
+
+<a name="v2.2.2"></a>
+## [v2.2.2] - 2021-03-13
+
+- fix: shorten role name ([#6](https://github.com/cabiri-io/terraform-aws-lambda/pull/6))
+- chore: Change the output messages format ([#4](https://github.com/cabiri-io/terraform-aws-lambda/pull/4))
+
+
 <a name="v2.2.1"></a>
 ## [v2.2.1] - 2021-03-10
 
