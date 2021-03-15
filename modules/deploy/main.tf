@@ -155,24 +155,6 @@ resource "local_file" "deploy_script" {
   content              = local.script
 }
 
-resource "null_resource" "deploy" {
-  count = var.create && var.create_deployment ? 1 : 0
-
-  triggers = {
-    appspec_sha256 = local.appspec_sha256
-    force_deploy   = var.force_deploy ? uuid() : false
-  }
-
-  provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command     = local.script
-    environment = {
-      WAIT_DEPLOYMENT_COMPLETION = var.wait_deployment_completion
-      ROLLBACK                   = false
-    }
-  }
-}
-
 resource "aws_codedeploy_app" "this" {
   count = var.create && var.create_app && ! var.use_existing_app ? 1 : 0
 
@@ -301,4 +283,30 @@ resource "aws_s3_bucket_object" "backup_codedeploy_script" {
   bucket = var.s3_bucket_name_for_backup
   key    = "${var.s3_object_name_prefix}/${var.function_name}-lambda-codedeploy.sh"
   source = element(concat(local_file.deploy_script.*.filename, [""]), 0)
+}
+
+resource "null_resource" "deploy" {
+  count = var.create && var.create_deployment ? 1 : 0
+
+  triggers = {
+    appspec_sha256 = local.appspec_sha256
+    force_deploy   = var.force_deploy ? uuid() : false
+  }
+
+  provisioner "local-exec" {
+    interpreter = ["/bin/bash", "-c"]
+    command     = local.script
+    environment = {
+      WAIT_DEPLOYMENT_COMPLETION = var.wait_deployment_completion
+      ROLLBACK                   = false
+    }
+  }
+   depends_on = [
+    aws_codedeploy_app.this,
+    aws_codedeploy_deployment_group.rollback,
+    aws_codedeploy_deployment_group.this,
+    aws_iam_role_policy_attachment.codedeploy,
+    aws_iam_role_policy_attachment.triggers,
+    aws_iam_role.codedeploy
+  ]
 }
