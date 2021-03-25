@@ -13,6 +13,9 @@ locals {
 }
 
 resource "aws_lambda_function" "this" {
+
+  provider = aws.lambda_deployment
+
   count = var.create && var.create_function && ! var.create_layer ? 1 : 0
 
   function_name                  = var.function_name
@@ -88,6 +91,10 @@ resource "aws_lambda_function" "this" {
 }
 
 resource "aws_lambda_layer_version" "this" {
+
+  provider = aws.lambda_deployment
+
+
   count = var.create && var.create_layer ? 1 : 0
 
   layer_name   = var.layer_name
@@ -107,6 +114,9 @@ resource "aws_lambda_layer_version" "this" {
 }
 
 resource "aws_s3_bucket_object" "lambda_package" {
+
+  provider = aws.lambda_deployment
+
   count = var.create && var.store_on_s3 && var.create_package ? 1 : 0
 
   bucket        = var.s3_bucket
@@ -127,6 +137,9 @@ data "aws_cloudwatch_log_group" "lambda" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda" {
+
+  provider = aws.lambda_deployment
+
   count = var.create && var.create_function && ! var.create_layer && ! var.use_existing_cloudwatch_log_group ? 1 : 0
 
   name              = "/aws/lambda/${var.lambda_at_edge ? "us-east-1." : ""}${var.function_name}"
@@ -137,6 +150,9 @@ resource "aws_cloudwatch_log_group" "lambda" {
 }
 
 resource "aws_lambda_provisioned_concurrency_config" "current_version" {
+
+  provider = aws.lambda_deployment
+
   count = var.create && var.create_function && ! var.create_layer && var.provisioned_concurrent_executions > -1 ? 1 : 0
 
   function_name = aws_lambda_function.this[0].function_name
@@ -150,6 +166,9 @@ locals {
 }
 
 resource "aws_lambda_function_event_invoke_config" "this" {
+
+  provider = aws.lambda_deployment
+
   for_each = var.create && var.create_function && ! var.create_layer && var.create_async_event_config ? local.qualifiers : {}
 
   function_name = aws_lambda_function.this[0].function_name
@@ -179,6 +198,9 @@ resource "aws_lambda_function_event_invoke_config" "this" {
 }
 
 resource "aws_lambda_permission" "current_version_triggers" {
+
+  provider = aws.lambda_deployment
+
   for_each = var.create && var.create_function && ! var.create_layer && var.create_current_version_allowed_triggers ? var.allowed_triggers : {}
 
   function_name = aws_lambda_function.this[0].function_name
@@ -194,6 +216,9 @@ resource "aws_lambda_permission" "current_version_triggers" {
 
 # Error: Error adding new Lambda Permission for lambda: InvalidParameterValueException: We currently do not support adding policies for $LATEST.
 resource "aws_lambda_permission" "unqualified_alias_triggers" {
+
+  provider = aws.lambda_deployment
+
   for_each = var.create && var.create_function && ! var.create_layer && var.create_unqualified_alias_allowed_triggers ? var.allowed_triggers : {}
 
   function_name = aws_lambda_function.this[0].function_name
@@ -207,6 +232,9 @@ resource "aws_lambda_permission" "unqualified_alias_triggers" {
 }
 
 resource "aws_lambda_event_source_mapping" "this" {
+
+  provider = aws.lambda_deployment
+
   for_each = var.create && var.create_function && ! var.create_layer && var.create_unqualified_alias_allowed_triggers ? var.event_source_mapping : tomap({})
 
   function_name = aws_lambda_function.this[0].arn

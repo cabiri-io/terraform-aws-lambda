@@ -29,6 +29,9 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "lambda" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role ? 1 : 0
 
   name                  = local.role_name
@@ -68,6 +71,9 @@ data "aws_iam_policy_document" "logs" {
 }
 
 resource "aws_iam_policy" "logs" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_cloudwatch_logs_policy ? 1 : 0
 
   name   = "${local.role_name}-logs"
@@ -75,6 +81,9 @@ resource "aws_iam_policy" "logs" {
 }
 
 resource "aws_iam_policy_attachment" "logs" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_cloudwatch_logs_policy ? 1 : 0
 
   name       = "${local.role_name}-logs"
@@ -104,6 +113,9 @@ data "aws_iam_policy_document" "dead_letter" {
 }
 
 resource "aws_iam_policy" "dead_letter" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_dead_letter_policy ? 1 : 0
 
   name   = "${local.role_name}-dl"
@@ -111,6 +123,9 @@ resource "aws_iam_policy" "dead_letter" {
 }
 
 resource "aws_iam_policy_attachment" "dead_letter" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_dead_letter_policy ? 1 : 0
 
   name       = "${local.role_name}-dl"
@@ -130,6 +145,9 @@ data "aws_iam_policy" "vpc" {
 }
 
 resource "aws_iam_policy" "vpc" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_network_policy ? 1 : 0
 
   name   = "${local.role_name}-vpc"
@@ -137,6 +155,9 @@ resource "aws_iam_policy" "vpc" {
 }
 
 resource "aws_iam_policy_attachment" "vpc" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_network_policy ? 1 : 0
 
   name       = "${local.role_name}-vpc"
@@ -156,6 +177,9 @@ data "aws_iam_policy" "tracing" {
 }
 
 resource "aws_iam_policy" "tracing" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_tracing_policy ? 1 : 0
 
   name   = "${local.role_name}-tracing"
@@ -163,6 +187,9 @@ resource "aws_iam_policy" "tracing" {
 }
 
 resource "aws_iam_policy_attachment" "tracing" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_tracing_policy ? 1 : 0
 
   name       = "${local.role_name}-tracing"
@@ -191,6 +218,9 @@ data "aws_iam_policy_document" "async" {
 }
 
 resource "aws_iam_policy" "async" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_async_event_policy ? 1 : 0
 
   name   = "${local.role_name}-async"
@@ -198,6 +228,9 @@ resource "aws_iam_policy" "async" {
 }
 
 resource "aws_iam_policy_attachment" "async" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_async_event_policy ? 1 : 0
 
   name       = "${local.role_name}-async"
@@ -210,6 +243,9 @@ resource "aws_iam_policy_attachment" "async" {
 ###########################
 
 resource "aws_iam_policy" "additional_json" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_policy_json ? 1 : 0
 
   name   = local.role_name
@@ -217,6 +253,9 @@ resource "aws_iam_policy" "additional_json" {
 }
 
 resource "aws_iam_policy_attachment" "additional_json" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_policy_json ? 1 : 0
 
   name       = local.role_name
@@ -229,6 +268,9 @@ resource "aws_iam_policy_attachment" "additional_json" {
 #####################################
 
 resource "aws_iam_policy" "additional_jsons" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_policy_jsons ? var.number_of_policy_jsons : 0
 
   name   = "${local.role_name}-${count.index}"
@@ -236,6 +278,9 @@ resource "aws_iam_policy" "additional_jsons" {
 }
 
 resource "aws_iam_policy_attachment" "additional_jsons" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_policy_jsons ? var.number_of_policy_jsons : 0
 
   name       = "${local.role_name}-${count.index}"
@@ -248,6 +293,9 @@ resource "aws_iam_policy_attachment" "additional_jsons" {
 ###########################
 
 resource "aws_iam_role_policy_attachment" "additional_one" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_policy ? 1 : 0
 
   role       = aws_iam_role.lambda[0].name
@@ -259,6 +307,9 @@ resource "aws_iam_role_policy_attachment" "additional_one" {
 ######################################
 
 resource "aws_iam_role_policy_attachment" "additional_many" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_policies ? var.number_of_policies : 0
 
   role       = aws_iam_role.lambda[0].name
@@ -312,6 +363,9 @@ data "aws_iam_policy_document" "additional_inline" {
 }
 
 resource "aws_iam_policy" "additional_inline" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_policy_statements ? 1 : 0
 
   name   = "${local.role_name}-inline"
@@ -319,6 +373,9 @@ resource "aws_iam_policy" "additional_inline" {
 }
 
 resource "aws_iam_policy_attachment" "additional_inline" {
+
+  provider = aws.lambda_deployment
+
   count = local.create_role && var.attach_policy_statements ? 1 : 0
 
   name       = local.role_name
