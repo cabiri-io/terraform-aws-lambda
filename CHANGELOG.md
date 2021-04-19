@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+<a name="v2.2.4"></a>
+## [v2.2.4] - 2021-04-19
+
+-  feat: change the default variables for auto_rollback_events ([#9](https://github.com/cabiri-io/terraform-aws-lambda/pull/9))
+
+
 <a name="v2.2.3"></a>
 ## [v2.2.3] - 2021-03-13
 
