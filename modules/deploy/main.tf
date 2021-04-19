@@ -301,7 +301,7 @@ resource "null_resource" "deploy" {
       ROLLBACK                   = false
     }
   }
-   depends_on = [
+  depends_on = [
     aws_codedeploy_app.this,
     aws_codedeploy_deployment_group.rollback,
     aws_codedeploy_deployment_group.this,

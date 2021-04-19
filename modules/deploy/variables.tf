@@ -109,9 +109,13 @@ variable "auto_rollback_enabled" {
 }
 
 variable "auto_rollback_events" {
-  description = "List of event types that trigger a rollback. Supported types are DEPLOYMENT_FAILURE and DEPLOYMENT_STOP_ON_ALARM."
+  description = "List of event types that trigger a rollback."
   type        = list(string)
-  default     = ["DEPLOYMENT_STOP_ON_ALARM"]
+  default = [
+    "DEPLOYMENT_FAILURE",
+    "DEPLOYMENT_STOP_ON_ALARM",
+    "DEPLOYMENT_STOP_ON_REQUEST"
+  ]
 }
 
 variable "alarm_enabled" {
