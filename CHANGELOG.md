@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+<a name="v2.2.5"></a>
+## [v2.2.5] - 2021-05-24
+
+-  feat: add codedeploy random sleep ([#10](https://github.com/cabiri-io/terraform-aws-lambda/pull/10))
+
 <a name="v2.2.4"></a>
 ## [v2.2.4] - 2021-04-19
 
