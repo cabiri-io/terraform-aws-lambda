@@ -99,7 +99,12 @@ if [ $WAIT_DEPLOYMENT_COMPLETION = true ]; then
     --query '[deploymentInfo.status]')
 
   while [ $STATUS == "Created" ] || [ $STATUS == "InProgress" ] || [ $STATUS == "Pending" ] || [ $STATUS == "Queued" ] || [ $STATUS == "Ready" ]; do
-    sleep 5
+
+    # Add a 20-30 seconds random sleep
+    SLEEP_TIME=$[ ( $RANDOM % 10 )  + 20 ]
+    echo "[${local.app_name}] Sleeping for: ${SLEEP_TIME} Seconds"
+    sleep ${SLEEP_TIME}s
+
     STATUS=$(${var.aws_cli_command} deploy get-deployment \
       --deployment-id $ID \
       --output text \
