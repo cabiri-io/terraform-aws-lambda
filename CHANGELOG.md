@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 
+<a name="v2.2.6"></a>
+## [v2.2.6] - 2021-05-25
+
+-  fix: remove curly brackets as they are reserved for terraform ([#11](https://github.com/cabiri-io/terraform-aws-lambda/pull/11))
+
 <a name="v2.2.5"></a>
 ## [v2.2.5] - 2021-05-24
 
