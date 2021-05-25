@@ -102,8 +102,8 @@ if [ $WAIT_DEPLOYMENT_COMPLETION = true ]; then
 
     # Add a 20-30 seconds random sleep
     SLEEP_TIME=$[ ( $RANDOM % 10 )  + 20 ]
-    echo "[${local.app_name}] Sleeping for: ${SLEEP_TIME} Seconds"
-    sleep ${SLEEP_TIME}s
+    echo "[${local.app_name}] Sleeping for: $SLEEP_TIME Seconds"
+    sleep $SLEEP_TIME
 
     STATUS=$(${var.aws_cli_command} deploy get-deployment \
       --deployment-id $ID \
